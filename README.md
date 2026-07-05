@@ -5,8 +5,8 @@ application (**CloudJuice**), runs a two-layer detection engine over it in near
 real-time, and presents findings in a SOC console for triage. Everything is
 provisioned with Terraform — no resource is created by hand.
 
-> Full architecture rationale, diagrams, and the Well-Architected mapping live
-> in `architecture-design.md`.
+<img width="8084" height="4164" alt="Aegis_Architecture drawio" src="https://github.com/user-attachments/assets/d87ffe3c-3875-4515-b761-2bdb12c79ccb" />
+
 
 ## What it does
 
