@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CloudJuice — Fresh Pressed, Cloud Delivered</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="brand">🧃 CloudJuice</div>
+    <div class="searchbar">
+      <input id="q" type="search" placeholder="Search juices…" autocomplete="off">
+      <button id="go">Search</button>
+    </div>
+    <nav class="links">
+      <a href="#" id="nav-shop">Shop</a>
+      <a href="#" id="nav-admin">Admin</a>
+      <button id="nav-login" class="ghost">Sign in</button>
+      <button id="nav-cart" class="cart">🛒 <span id="cart-count">0</span></button>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h1>Cold-pressed. Cloud-delivered.</h1>
+      <p>Twelve small-batch juices, squeezed fresh and shipped from the edge.</p>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <h2 id="grid-title">Our juices</h2>
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <!-- product modal -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-card">
+      <button class="x" id="modal-x">×</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- auth modal -->
+  <div id="auth" class="modal hidden">
+    <div class="modal-card small">
+      <button class="x" id="auth-x">×</button>
+      <h3 id="auth-title">Sign in</h3>
+      <input id="auth-email" placeholder="Email" autocomplete="off">
+      <input id="auth-pass" type="password" placeholder="Password" autocomplete="off">
+      <button id="auth-submit" class="primary">Sign in</button>
+      <p class="switch">No account? <a href="#" id="auth-switch">Create one</a></p>
+      <p id="auth-msg" class="msg"></p>
+    </div>
+  </div>
+
+  <!-- cart drawer -->
+  <div id="cart" class="drawer hidden">
+    <div class="drawer-card">
+      <button class="x" id="cart-x">×</button>
+      <h3>Your basket</h3>
+      <ul id="cart-items"></ul>
+      <div class="total">Total: $<span id="cart-total">0.00</span></div>
+      <button class="primary" id="checkout">Checkout</button>
+    </div>
+  </div>
+
+  <footer class="foot">CloudJuice Inc. · <a href="/robots.txt">robots.txt</a> · a deliberately monitored demo shop</footer>
+  <script src="/app.js"></script>
+</body>
+</html>

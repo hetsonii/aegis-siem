@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aegis · SOC Console</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="config.js"></script>
+  <script src="catalog.js"></script>
+  <script src="api.js"></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo"><span class="shield">◈</span><span>AEGIS</span></div>
+      <nav id="nav">
+        <a data-route="overview"><i>▚</i>Overview</a>
+        <a data-route="discover"><i>❖</i>Discover</a>
+        <a data-route="incidents"><i>⚠</i>Incidents</a>
+        <a data-route="detections"><i>⛨</i>Detections</a>
+        <a data-route="map"><i>◎</i>Threat Map</a>
+        <a data-route="response"><i>⦻</i>Response</a>
+      </nav>
+      <div class="sidefoot">
+        <span class="pulse"></span><span id="live-label">live</span>
+      </div>
+    </aside>
+
+    <section class="main">
+      <header class="topbar">
+        <div class="crumb"><span id="page-title">Overview</span></div>
+        <div class="kql">
+          <span class="kql-prefix">search</span>
+          <input id="q" placeholder='e.g. sqli   or   critical   or   8.8.8.8' autocomplete="off">
+          <button id="q-run" title="Run">Run</button>
+        </div>
+        <div class="controls">
+          <select id="range" title="Time range">
+            <option value="900">Last 15m</option>
+            <option value="3600">Last 1h</option>
+            <option value="14400">Last 4h</option>
+            <option value="86400" selected>Last 24h</option>
+            <option value="604800">Last 7d</option>
+            <option value="0">All time</option>
+          </select>
+          <select id="refresh" title="Auto-refresh">
+            <option value="0" selected>Refresh: off</option>
+            <option value="10000">Every 10s</option>
+            <option value="30000">Every 30s</option>
+            <option value="60000">Every 60s</option>
+          </select>
+          <button id="refresh-now" title="Refresh now">⟳</button>
+        </div>
+      </header>
+      <div id="pills" class="pills"></div>
+      <main id="view"></main>
+    </section>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

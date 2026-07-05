@@ -1,0 +1,22 @@
+# Terraform
+infra/.terraform/
+infra/.terraform.lock.hcl
+infra/build/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# Node
+node_modules/
+
+# Local env / creds
+.env
+*.local
+*.tftpl

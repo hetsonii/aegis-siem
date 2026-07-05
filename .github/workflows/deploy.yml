@@ -1,0 +1,81 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+  TF_DIR: infra
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test deps
+        run: pip install -r tests/requirements.txt
+      - name: Run detection unit tests
+        run: pytest -q
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Learner Lab issues temporary credentials that rotate each session.
+      # Refresh these three repository secrets at the start of each lab session.
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+
+      - name: Terraform init
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform init -input=false
+
+      # Phase 1: create the ECR repository so we have somewhere to push.
+      - name: Bootstrap ECR
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform apply -input=false -auto-approve -target=aws_ecr_repository.cloudjuice
+
+      - name: Build and push image
+        working-directory: ${{ env.TF_DIR }}
+        run: |
+          REPO=$(terraform output -raw ecr_repository_url)
+          aws ecr get-login-password --region "$AWS_REGION" \
+            | docker login --username AWS --password-stdin "${REPO%/*}"
+          docker build -t "$REPO:latest" ../app
+          docker push "$REPO:latest"
+
+      # Phase 2: provision everything else now that the image exists.
+      - name: Terraform apply
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform apply -input=false -auto-approve
+
+      - name: Force ECS redeploy (pick up new image on redeploys)
+        run: |
+          aws ecs update-service --cluster aegis-cluster \
+            --service aegis-cloudjuice --force-new-deployment >/dev/null || true
+
+      - name: Show endpoints
+        working-directory: ${{ env.TF_DIR }}
+        run: |
+          echo "Target:  $(terraform output -raw cloudjuice_url)"
+          echo "Console: $(terraform output -raw console_url)"
+          echo "API:     $(terraform output -raw api_base)"
