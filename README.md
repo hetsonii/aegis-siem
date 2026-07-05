@@ -1,9 +1,9 @@
-# Aegis — a cloud-native mini-SIEM on AWS
+# Aegis - a cloud-native mini-SIEM on AWS
 
 Aegis ingests security telemetry from a live, deliberately attack-visible web
 application (**CloudJuice**), runs a two-layer detection engine over it in near
 real-time, and presents findings in a SOC console for triage. Everything is
-provisioned with Terraform — no resource is created by hand.
+provisioned with Terraform - no resource is created by hand.
 
 <img width="8084" height="4164" alt="Aegis_Architecture drawio" src="https://github.com/user-attachments/assets/d87ffe3c-3875-4515-b761-2bdb12c79ccb" />
 
@@ -11,7 +11,7 @@ provisioned with Terraform — no resource is created by hand.
 ## What it does
 
 - **CloudJuice** (ECS Fargate + ALB) is a real web app that *recognizes and
-  logs* attack behavior but never executes attacker input — a sensor, not a
+  logs* attack behavior but never executes attacker input - a sensor, not a
   victim. An external attack script drives realistic traffic at it.
 - Security events flow through four authentic channels: app events
   (CloudWatch Logs), ALB access logs, VPC Flow Logs, and CloudTrail (all to S3).
@@ -22,7 +22,7 @@ provisioned with Terraform — no resource is created by hand.
   20+ rules covering SQLi, XSS, command injection, SSTI, Log4Shell, NoSQLi, XXE,
   SSRF, LFI/RFI, path traversal, IDOR, scanners, sensitive-file probes, and more)
   **plus a live statistical layer** (rate, brute-force, credential-stuffing, entropy,
-  first-seen sources) using per-source windowed counters in **DynamoDB** — no trained
+  first-seen sources) using per-source windowed counters in **DynamoDB** - no trained
   model. Every rule is mapped to a **MITRE ATT&CK** technique, findings are enriched
   with **cached GeoIP** threat intel, and each is emitted in the **OCSF** Detection
   Finding schema. Findings go to DynamoDB, evidence bundles to S3, and anything
@@ -30,15 +30,15 @@ provisioned with Terraform — no resource is created by hand.
 - **EventBridge** runs a scheduled correlation sweep for slow patterns.
 - The **SOC console** (S3 static site → API Gateway → dashboard Lambda) is a
   multi-page, Kibana-style analyst workspace:
-  - **Overview** — KPIs (findings, open incidents, high+critical, blocked sources,
+  - **Overview** - KPIs (findings, open incidents, high+critical, blocked sources,
     MTTA/MTTR), a findings-over-time chart, severity breakdown, and top sources.
-  - **Discover** — a KQL-style search bar, global time picker, interactive
+  - **Discover** - a KQL-style search bar, global time picker, interactive
     histogram, a field sidebar with top values, filter pills, and expandable rows
     that reveal the full finding + OCSF evidence.
-  - **Incidents** — findings grouped by source into triageable cases.
-  - **Detections** — the rule catalog and a live **MITRE ATT&CK coverage matrix**.
-  - **Threat Map** — a Leaflet map of attack origins from the GeoIP enrichment.
-  - **Response** — the blocklist: block a source (the honeypot polls the list and
+  - **Incidents** - findings grouped by source into triageable cases.
+  - **Detections** - the rule catalog and a live **MITRE ATT&CK coverage matrix**.
+  - **Threat Map** - a Leaflet map of attack origins from the GeoIP enrichment.
+  - **Response** - the blocklist: block a source (the honeypot polls the list and
     starts returning `403`, logged as a finding) and **unblock** to restore it.
 
 ## Repo layout
@@ -146,7 +146,7 @@ python ..\attack\attack.py --target (terraform output -raw cloudjuice_url) --sce
 python3 ../attack/attack.py --target "$(terraform output -raw cloudjuice_url)" --scenario campaign
 ```
 
-Other scenarios: `all`, or a single type — `sqli`, `xss`, `cmd`, `ssti`,
+Other scenarios: `all`, or a single type - `sqli`, `xss`, `cmd`, `ssti`,
 `log4shell`, `ssrf`, `nosqli`, `xxe`, `lfi`, `traversal`, `idor`, `scanner`,
 `sensitive`, `recon`, `brute`, `credstuff`, `benign`. Add `--source-ip <ip>` to
 attribute traffic to a specific origin.
@@ -154,7 +154,7 @@ attribute traffic to a specific origin.
 Then open the **console URL** from `terraform output` and work the pages:
 **Overview** for the situation, **Discover** to search/filter events, **Incidents**
 to triage by source, **Detections** for the ATT&CK matrix, **Threat Map** for
-origins, and **Response** to block a noisy source and watch it get `403`ed — then
+origins, and **Response** to block a noisy source and watch it get `403`ed - then
 unblock it.
 
 ## Redeploy after changes
@@ -205,6 +205,6 @@ pytest -q                               # same tests under pytest (used in CI)
   group (ALB is the only ingress) to avoid a NAT gateway; production would place
   them in private subnets behind NAT or VPC endpoints.
 - **Console hosting.** The console is served as a public S3 static site. If the
-  account enforces S3 Block Public Access, the public site will be blocked — in
+  account enforces S3 Block Public Access, the public site will be blocked - in
   that case open `spa/index.html` locally after setting `API_BASE` in
   `spa/config.js` to the `api_base` output; the API's CORS allows this.
